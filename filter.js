@@ -186,8 +186,8 @@ function hideReplies() {
 
     const thread = reply.closest('ytd-comment-thread-renderer');
     const n = thread.dataset.botCount ? parseInt(thread.dataset.botCount, 10) + 1 : 1;
-    // const authorElem = reply.querySelector('#author-text');
-    let authorElem = null // debuging
+    const authorElem = reply.querySelector('#author-text');
+    // let authorElem = null // debuging
     const norm = normalize(textElem.textContent);
     if (authorElem) {
         authorName = normalize(authorElem.textContent || '');
