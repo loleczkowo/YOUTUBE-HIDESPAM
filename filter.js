@@ -1,3 +1,5 @@
+// Disclaimer: Im not a JS dev. Most of this code was made with the help of AI.
+
 const regexList = [
   /DO\s*NT\s*READ\s*MY\s*NAME/i,
   /MY\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s*((IS|ARE|[I1L][S5])\s*)?(WAY\s+)?BETTER/i,
@@ -120,6 +122,18 @@ function showNotice(text) {
 }
 
 
+(function injectBotCSS() {
+  if (document.getElementById('bot-count-css')) return;      // already present
+  const style = document.createElement('style');
+  style.id = 'bot-count-css';
+  style.textContent = `
+      .bot-count {
+          font-size: 0.8em;         /* 80 % of normal text */
+          opacity: 0.7;             /* a touch lighter */
+      }`;
+  document.head.append(style);
+})();
+
 function relabelReplies(thread) {
     const count  = thread.dataset.botCount || '0';
     const suffix = ` (${count} bots)`;
@@ -127,13 +141,11 @@ function relabelReplies(thread) {
     const renderer = thread.querySelector('ytd-comment-replies-renderer');
     if (!renderer) return;
 
-    /* primary – ID-based buttons */
     const buttons = [
         ...renderer.querySelectorAll('ytd-button-renderer#more-replies button'),
         ...renderer.querySelectorAll('ytd-button-renderer#less-replies button')
     ];
 
-    /* fallback – your original positional paths (kept for safety) */
     if (buttons.length === 0) {
         buttons.push(
             ...renderer.querySelectorAll(
@@ -144,13 +156,13 @@ function relabelReplies(thread) {
     }
 
     buttons.forEach(btn => {
-        if (!btn) return;                                     // defensive
-        btn.querySelectorAll(
-            'div span.yt-core-attributed-string[role="text"]'
-        ).forEach(span => {
-            span.textContent =
-                span.textContent.replace(/\s\(\d+\s+bots\)$/, '') + suffix;
-        });
+        if (!btn) return;
+
+        btn.querySelectorAll('div span.yt-core-attributed-string[role="text"]')
+          .forEach(span => {
+              const base = span.textContent.replace(/\s\(\d+\s+bots\)$/, '');
+              span.innerHTML = `${base}<span class="bot-count">${suffix}</span>`;
+          });
 
         const label = btn.getAttribute('aria-label') || '';
         btn.setAttribute(
