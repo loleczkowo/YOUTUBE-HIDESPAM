@@ -1,7 +1,7 @@
 {
   "manifest_version": 4,
   "name": "YT Reply Filter",
-  "version": "4.3.10",
+  "version": "5.0.6",
   "description": "Hides spam comments (eg uttp shit ect)",
   "permissions": ["activeTab"],
   "content_scripts": [

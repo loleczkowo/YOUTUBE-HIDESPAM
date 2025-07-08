@@ -120,8 +120,48 @@ function showNotice(text) {
 }
 
 
-const knownBots = [];
+function relabelReplies(thread) {
+    const count  = thread.dataset.botCount || '0';
+    const suffix = ` (${count} bots)`;
 
+    const renderer = thread.querySelector('ytd-comment-replies-renderer');
+    if (!renderer) return;
+
+    /* primary – ID-based buttons */
+    const buttons = [
+        ...renderer.querySelectorAll('ytd-button-renderer#more-replies button'),
+        ...renderer.querySelectorAll('ytd-button-renderer#less-replies button')
+    ];
+
+    /* fallback – your original positional paths (kept for safety) */
+    if (buttons.length === 0) {
+        buttons.push(
+            ...renderer.querySelectorAll(
+                'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) ytd-button-renderer button,' +
+                'div:nth-child(1) > div:nth-child(1) > div:nth-child(2) ytd-button-renderer button'
+            )
+        );
+    }
+
+    buttons.forEach(btn => {
+        if (!btn) return;                                     // defensive
+        btn.querySelectorAll(
+            'div span.yt-core-attributed-string[role="text"]'
+        ).forEach(span => {
+            span.textContent =
+                span.textContent.replace(/\s\(\d+\s+bots\)$/, '') + suffix;
+        });
+
+        const label = btn.getAttribute('aria-label') || '';
+        btn.setAttribute(
+            'aria-label',
+            label.replace(/\s\(\d+\s+bots\)$/, '') + suffix
+        );
+    });
+}
+
+
+const knownBots = [];
 
 function hideReplies() {
   const replies = document.querySelectorAll('ytd-comment-view-model');
@@ -132,6 +172,8 @@ function hideReplies() {
     const textElem = reply.querySelector('#content-text');
     if (!textElem) return;
 
+    const thread = reply.closest('ytd-comment-thread-renderer');
+    const n = thread.dataset.botCount ? parseInt(thread.dataset.botCount, 10) + 1 : 1;
     // const authorElem = reply.querySelector('#author-text');
     let authorElem = null // debuging
     const norm = normalize(textElem.textContent);
@@ -141,6 +183,10 @@ function hideReplies() {
           console.log(`[DEL-SPAM] already muted name: ${authorName} (message: ${norm})`);
           showNotice(`[DEL-SPAM] already muted name: ${authorName}`);
           reply.remove();
+          if (thread) {
+            thread.dataset.botCount = n;
+            relabelReplies(thread);
+          }
           return
         }
         for (const nameRegex of nameRegexList) {
@@ -148,6 +194,10 @@ function hideReplies() {
                 console.log(`[DEL-SPAM] removed due to name match: ${authorName} (message: ${norm})`);
                 showNotice(`[DEL-SPAM] removed due to name match: ${authorName}`);
                 knownBots.push(authorName);
+                if (thread) {
+                  thread.dataset.botCount = n;
+                  relabelReplies(thread);
+                }
                 reply.remove();
                 return;
             }
@@ -160,6 +210,10 @@ function hideReplies() {
         console.log(`[DEL-SPAM] deleted comment ${reason} (message: ${norm})`);
         showNotice(`[DEL-SPAM] deleted comment ${reason}`);
         if (authorName) knownBots.push(authorName);
+        if (thread) {
+          thread.dataset.botCount = n;
+          relabelReplies(thread);
+        }
         reply.remove();
         break;
       }
