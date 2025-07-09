@@ -2,11 +2,21 @@
 
 const regexList = [
   /DO\s*NT\s*READ\s*MY\s*NAME/i,
-  /MY\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s*((IS|ARE|[I1L][S5])\s*)?(WAY\s+)?BETTER/i,
+  /M?Y\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s+((ARE|[IL]S)\s*)?((SUPER\s+)?WAY\s+)?BETTER/i,
   /^\s*(DONT\s+)?TRANSLATE/i,
-  /I\s+JUST\s+UPLOADED\s+(A\s+)?(HILARIOUS|FUNNY)\s+CLIP/i,
+  /I\s+(JUST\s+)?UPLOADED\s+(A\s+)?(HILARIOUS|FUNNY)\s+(CLIP|V[Il]DEO)/i,
   /UTTP\s+[I1L][S5]\s+(FAR\s+|WAY\s+)?BETTER\s+THAN/i,
-  /(?:[I1l]M|[I1l]\s+AM)\s+BETTER\s+THAN\s+\S+/i
+  // /(?:[Il]M|[Il]\s+AM)\s+(FAR\s+)?BETTER/igms/i,           // It might be too far?
+  /IS\s+AI\s+(GEN(ERATED?)?\s+)?(?:[Il]M|[Il]\s+AM)\s+(FAR\s+|WAY\s+)?BETTER/i, // its better
+  /DIDNT\s+READ\s+YOUR?S?\s+COMMENT/i,
+  /[Il]M?\s+NOT\s+READING\s+YOUR?\s+COMMENT/i,
+  /([IL]|WE)\s+(MAKE)?\s+(BETTER)\s+(CONTENT|V[Il]DEOS?|CL[Il]PS?)/i,
+  /(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)\s+WARNING\s+(TROLL|N[Il][CG]+ER)/i,
+
+  // Here are some hard coded spams that are too "normal" to make a regexp from them
+  /ZACK D FILMS IS MID IM FAR BETTER/i,
+  /IM BETTER THAN (ZACK( D FILMS)?)( LMAO)?/i,
+  /ZACK(\s*D\s*FILMS)? steals? ((MY|M[Il]NE|OUR|[Il]) )?c\s*o\s*n\s*t\s*e\s*n\s*t/i
 ];
 
 const nameRegexList = [
@@ -20,18 +30,22 @@ const regexReason = [
   '"TRANSLATE" bot',
   '"I JUST UPLOADED A..."',
   '"UTTP IS BETTER THEN..."',
-  '"IM BETTER THEN e'
+  // '"IM BETTER THEN ..."',
+  '"... IS AI GEN IM BETTER"',
+  '"DIDINT READ YOUR COMMENT"',
+  '"IM NOT READING YOUR COMMENT"',
+  '"I MAKE BETTER ..."',
+  '"x WARNING TROLL"',
+
+  '"... is bad im better"',
+  '"im better then..."',
+  '"... steals content"'
+
 ];
 
-
-// todo make this
-const commentRegexList = [
-  /WHO('?S|\s+IS)?\s+(HERE\s+)?(RE)?WATCHING.*20\d{2}/i
-];
-
-const commentRegexReason = [
-  '"whos watching at year 4269"'
-];
+let lastRun = 0;
+const THROTTLE_MS = 500;
+const WAITBEFORE = 300
 
 function clearDirection(text) {
   const LTR = '\u202D';
@@ -79,10 +93,10 @@ function normalize(text) {
   text = clearDirection(text);
 
   return text
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')      // Strip accents and diacritics
     .toUpperCase()
     .replace(/\r?\n/g, ' ')                                // Remove line breaks
     .replace(/[\u202A-\u202E\u200B-\u200F]/g, '')          // Remove invisible Unicode formatting chars
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')      // Strip accents and diacritics
     .replace(/[^A-Z0-9\s]/g, '');                          // Remove non-alphanumerics (preserve spaces)
 }
 
@@ -172,10 +186,12 @@ function relabelReplies(thread) {
     });
 }
 
-
 const knownBots = [];
 
-function hideReplies() {
+// TODO a retry system
+function hideReplies(depth = 0) {
+  lastRun = Date.now();
+
   const replies = document.querySelectorAll('ytd-comment-view-model');
 
   replies.forEach(reply => {
@@ -234,10 +250,6 @@ function hideReplies() {
 }
 
 // Throttle wrapper
-let lastRun = 0;
-const THROTTLE_MS = 500;
-const WAITBEFORE = 250
-
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -248,7 +260,6 @@ async function throttledHideReplies() {
     const now = Date.now();
 
     if (now - lastRun > THROTTLE_MS) {
-      lastRun = now;
       hideReplies();
       break;
     } else if (now > lastRun) {
