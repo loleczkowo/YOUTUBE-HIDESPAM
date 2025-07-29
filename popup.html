@@ -11,6 +11,8 @@
             padding: 12px;
             background: #fff;
             width: 220px;
+            padding-bottom: 32px;
+            box-sizing: border-box;
         }
         h1 {
             font-size: 14px;
@@ -19,6 +21,26 @@
         }
         label {
             font-size: 13px;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 6px 8px;
+            font-size: 11px;
+            color: #666;
+            background: #f7f7f7;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .footer .by {
+            white-space: nowrap;
+        }
+        .footer .version {
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -37,15 +59,10 @@
 
     <p style="margin-top:8px;">Blocked users (coming soon™)</p>
 
-    <script>
-        // Try to get version from manifest (for extensions)
-        if (chrome && chrome.runtime && chrome.runtime.getManifest) {
-            const manifest = chrome.runtime.getManifest();
-            document.getElementById('version').textContent = 'Version: ' + manifest.version;
-        } else {
-            document.getElementById('version').textContent = 'Version: 1.0.0';
-        }
-    </script>
+    <div class="footer" aria-label="about">
+        <span class="by">by loleczkowo</span>
+        <span class="version" id="version">Version: (loading...)</span>
+    </div>
     <script src="popup.js"></script>
 </body>
 </html>
