@@ -1,17 +1,38 @@
-// Disclaimer: Im not a JS dev. Most of this code was made with the help of AI.
+// Disclaimer: I'm not a JS dev. Most of this code was made with the help of AI.
+
+let enabled = false;
+
+chrome.storage.sync.get({ enabled: true }, (data) => {
+  enabled = data.enabled;
+  console.log(`[DEL-SPAM] Loaded: ${enabled ? 'enabled' : 'disabled'}`);
+});
+
+// Live-toggle from the popup without reload
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.enabled) {
+    enabled = changes.enabled.newValue;
+    if (enabled) {
+      showNotice('[DEL-SPAM] (ENABLED)');
+      hideReplies();
+    } else {
+      showNotice('[DEL-SPAM] (DISABLED) Reload the page to see the deleted comments');
+    }
+    console.log(`[DEL-SPAM] Toggled: ${enabled ? 'enabled' : 'disabled'}`);
+  }
+});
 
 const regexList = [
   /DO\s*NT\s*READ\s*MY\s*NAME/i,
-  /M?Y\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s+((ARE|[IL]S)\s*)?((SUPER\s+)?WAY\s+)?BETTER/i,
+  /M?Y\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s+((A?RE?|[IL]S)\s*)?((SUPER\s+)?WAY\s+)?BETTER/i,
   /^\s*(DONT\s+)?TRANSLATE/i,
   /I\s+(JUST\s+)?UPLOADED\s+(A\s+)?(HILARIOUS|FUNNY)\s+(CLIP|V[Il]DEO)/i,
   /UTTP\s+[I1L][S5]\s+(FAR\s+|WAY\s+)?BETTER\s+THAN/i,
-  // /(?:[Il]M|[Il]\s+AM)\s+(FAR\s+)?BETTER/igms/i,           // It might be too far?
+  // /(?:[Il]M|[Il]\s+AM)\s+(FAR\s+)?BETTER/i,           // It might be too far?
   /IS\s+AI\s+(GEN(ERATED?)?\s+)?(?:[Il]M|[Il]\s+AM)\s+(FAR\s+|WAY\s+)?BETTER/i, // its better
   /DIDNT\s+READ\s+YOUR?S?\s+COMMENT/i,
   /[Il]M?\s+NOT\s+READING\s+YOUR?\s+COMMENT/i,
   /([IL]|WE)\s+(MAKE)?\s+(BETTER)\s+(CONTENT|V[Il]DEOS?|CL[Il]PS?)/i,
-  /(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)\s+WARNING\s+(TROLL|N[Il][CG]+ER)/i,
+  /(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)\s+WARNING\s+(TROLL|N[Il][CG][CG]ER)/i,
 
   // Here are some hard coded spams that are too "normal" to make a regexp from them
   /ZACK D FILMS IS MID IM FAR BETTER/i,
@@ -255,6 +276,7 @@ function sleep(ms) {
 }
 
 async function throttledHideReplies() {
+  if (!enabled) return;
   await sleep(WAITBEFORE);
   while (true) {
     const now = Date.now();
@@ -280,4 +302,4 @@ document.addEventListener('keydown', (e) => {
 const observer = new MutationObserver(throttledHideReplies);
 observer.observe(document.body, { childList: true, subtree: true });
 
-hideReplies();
+if (enabled) hideReplies();

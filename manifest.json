@@ -1,15 +1,19 @@
 {
   "manifest_version": 3,
   "name": "YT Reply Filter",
-  "version": "5.1.10",
-  "description": "Hides spam comments (eg uttp shit ect)",
+  "version": "5.2.2",
+  "description": "Hides spam comments (eg uttp shit etc)",
   "author": "loleczkowo",
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "storage"],
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*"],
       "js": ["filter.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Hide Spam"
+  }
 }
