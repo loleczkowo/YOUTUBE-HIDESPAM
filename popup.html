@@ -24,14 +24,28 @@
 </head>
 <body>
     <h1>YouTube Hide Spam</h1>
-
-    <label>
-        <input type="checkbox" id="enableToggle">
-        Enable Filter
-    </label>
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label>
+            <input type="checkbox" id="enableToggle">
+            Enable Filter
+        </label>
+        <label>
+            <input type="checkbox" id="knownBotsToggle">
+            Hide already hidden users
+        </label>
+    </div>
 
     <p style="margin-top:8px;">Blocked users (coming soon™)</p>
 
+    <script>
+        // Try to get version from manifest (for extensions)
+        if (chrome && chrome.runtime && chrome.runtime.getManifest) {
+            const manifest = chrome.runtime.getManifest();
+            document.getElementById('version').textContent = 'Version: ' + manifest.version;
+        } else {
+            document.getElementById('version').textContent = 'Version: 1.0.0';
+        }
+    </script>
     <script src="popup.js"></script>
 </body>
 </html>

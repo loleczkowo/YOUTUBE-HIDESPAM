@@ -1,10 +1,13 @@
 // Disclaimer: I'm not a JS dev. Most of this code was made with the help of AI.
 
 let enabled = false;
+let knownBots_enabled = false;
 
-chrome.storage.sync.get({ enabled: true }, (data) => {
+chrome.storage.sync.get({ enabled: true, knownBots_enabled: true }, (data) => {
   enabled = data.enabled;
+  knownBots_enabled = data.knownBots_enabled;
   console.log(`[DEL-SPAM] Loaded: ${enabled ? 'enabled' : 'disabled'}`);
+  if (enabled) hideReplies();
 });
 
 // Live-toggle from the popup without reload
@@ -18,6 +21,15 @@ chrome.storage.onChanged.addListener((changes) => {
       showNotice('[DEL-SPAM] (DISABLED) Reload the page to see the deleted comments');
     }
     console.log(`[DEL-SPAM] Toggled: ${enabled ? 'enabled' : 'disabled'}`);
+  }
+  if (changes.knownBots_enabled) {
+    knownBots_enabled = changes.knownBots_enabled.newValue;
+    if (knownBots_enabled) {
+      showNotice('[DEL-SPAM] Hiding already hidden users (ENABLED)');
+    } else {
+      showNotice('[DEL-SPAM] Hiding already hidden users (DISABLED) Reload the page to see the deleted comments');
+    }
+    console.log(`[DEL-SPAM] Hiding already hidden users ${knownBots_enabled ? 'enabled' : 'disabled'}`);
   }
 });
 
@@ -224,11 +236,11 @@ function hideReplies(depth = 0) {
     const thread = reply.closest('ytd-comment-thread-renderer');
     const n = thread.dataset.botCount ? parseInt(thread.dataset.botCount, 10) + 1 : 1;
     const authorElem = reply.querySelector('#author-text');
-    // let authorElem = null // debuging
+    // let authorElem = null // debugging
     const norm = normalize(textElem.textContent);
     if (authorElem) {
         authorName = normalize(authorElem.textContent || '');
-        if (knownBots.includes(authorName)) {
+        if (knownBots.includes(authorName) && knownBots_enabled) {
           console.log(`[DEL-SPAM] already muted name: ${authorName} (message: ${norm})`);
           showNotice(`[DEL-SPAM] already muted name: ${authorName}`);
           reply.remove();
@@ -301,5 +313,3 @@ document.addEventListener('keydown', (e) => {
 
 const observer = new MutationObserver(throttledHideReplies);
 observer.observe(document.body, { childList: true, subtree: true });
-
-if (enabled) hideReplies();
