@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "YT Reply Filter",
-  "version": "5.3.2",
-  "description": "Hides spam comments (eg uttp shit etc)",
+  "name": "YouTube Comments Filter",
+  "version": "5.4.1",
+  "description": "Hides spam comments (e.g. Uttp-type spam etc.)",
   "author": "loleczkowo",
   "permissions": ["activeTab", "storage"],
   "content_scripts": [
@@ -14,6 +14,16 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "YouTube Hide Spam"
+    "default_title": "YouTube Hide Spam",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
 }
