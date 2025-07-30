@@ -53,7 +53,8 @@ const regexList = [
 ];
 
 const nameRegexList = [
-  /UTTP/i,
+  // This might be too much, so i disabled it for now (someone could have nickname eg "AntiUTTP")
+  // /UTTP/i,
   /DONTREADMY(PICTURE|CHANNEL|BIO|DESCRIPTION)/i
 ];
 
