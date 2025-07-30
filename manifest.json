@@ -4,7 +4,7 @@
   "version": "5.4.1",
   "description": "Hides spam comments (e.g. Uttp-type spam etc.)",
   "author": "loleczkowo",
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*"],
