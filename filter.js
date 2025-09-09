@@ -40,6 +40,7 @@ const regexList = [
   /^\s*(DONT\s+)?TRANSLATE/i,
   /I\s+(JUST\s+)?UPLOADED\s+(A\s+)?(HILARIOUS|FUNNY)\s+(CLIP|V[Il]DEO)/i,
   /UTTP(['`]S)?\s+([I1L][S5]\s+)?(FAR\s+|WAY\s+)?BETTER\s+THAN/i,
+  /ALIVE BECAUSE MY VlDS ARE BETTER/i,  // very clearly a bot trying to be sneaky
   // /(?:[Il]M|[Il]\s+AM)\s+(FAR\s+)?BETTER/i,           // It might be too far?
   /IS\s+AI\s+(GEN(ERATED?)?\s+)?(?:[Il]M|[Il]\s+AM)\s+(FAR\s+|WAY\s+)?BETTER/i, // its better
   /DIDNT\s+READ\s+YOUR?S?\s+COMMENT/i,
