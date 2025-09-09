@@ -35,10 +35,11 @@ chrome.storage.onChanged.addListener((changes) => {
 
 const regexList = [
   /DO\s*NT\s*READ\s*MY\s*NAME/i,
-  /M?Y\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s+((A?RE?|[IL]S)\s*)?((SUPER\s+)?WAY\s+)?BETTER/i,
+  // /M?Y\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s+((A?RE?|[IL]S)\s*)?((SUPER\s+)?WAY\s+)?BETTER/i, disabled because "even my videos are better then this bot"
+  /M?Y\s+(V[I1L]DEOS?|CONTENT|UPLOADS?)?\s+((A?RE?|[IL]S)\s*)?((SUPER\s+)?WAY\s+)?BETTER\sTHIS\s((I|l)ncoherent)?\s?(soulless goyslop)/i,  // this is better
   /^\s*(DONT\s+)?TRANSLATE/i,
   /I\s+(JUST\s+)?UPLOADED\s+(A\s+)?(HILARIOUS|FUNNY)\s+(CLIP|V[Il]DEO)/i,
-  /UTTP\s+[I1L][S5]\s+(FAR\s+|WAY\s+)?BETTER\s+THAN/i,
+  /UTTP(['`]S)?\s+([I1L][S5]\s+)?(FAR\s+|WAY\s+)?BETTER\s+THAN/i,
   // /(?:[Il]M|[Il]\s+AM)\s+(FAR\s+)?BETTER/i,           // It might be too far?
   /IS\s+AI\s+(GEN(ERATED?)?\s+)?(?:[Il]M|[Il]\s+AM)\s+(FAR\s+|WAY\s+)?BETTER/i, // its better
   /DIDNT\s+READ\s+YOUR?S?\s+COMMENT/i,
@@ -60,7 +61,7 @@ const nameRegexList = [
 
 const regexReason = [
   '"DONT READ MY NAME"',
-  '"MY STUFF IS BETTER"',
+  '"(uttp message) MY STUFF IS BETTER THEN THIS ..."',
   '"TRANSLATE" bot',
   '"I JUST UPLOADED A..."',
   '"UTTP IS BETTER THEN..."',
