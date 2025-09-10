@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Comments Filter",
+  "version": "5.5.0",
+  "description": "Hides spam comments (e.g. Uttp-type spam etc.)",
+  "author": "loleczkowo",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["filter.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Hide Spam",
+    "default_icon": { 
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "yt-comments-filter@loleczkowo",
+      "strict_min_version": "109.0"
+    }
+  }
+}
