@@ -42,12 +42,14 @@ const regexList = [
   /UTTP(['`]S)?\s+([I1L][S5]\s+)?(FAR\s+|WAY\s+)?BETTER\s+THAN/i,
   /ALIVE\s+BECAUSE\s+MY\s+VlDS\s+ARE\s+BETTER/i,  // very clearly a bot trying to be sneaky
   /[IL]\s+LOVE\s+RAP(I?NG|LNG),?\s+TORTUR[IL]NG(,?\s+([&(AND)]\s+)?)BURN[IL]NG AN[IL]MALS/i,  // UTTP is really something else
+  /[IL]\sLOVE\sRAP\s*[IL]NG\s+AB\s*USING\sANIMA[IL]S/i,
   // /(?:[Il]M|[Il]\s+AM)\s+(FAR\s+)?BETTER/i,           // It might be too far?
   /IS\s+AI\s+(GEN(ERATED?)?\s+)?(?:[Il]M|[Il]\s+AM)\s+(FAR\s+|WAY\s+)?BETTER/i, // its better
   /DIDNT\s+READ\s+YOUR?S?\s+COMMENT/i,
   /[Il]M?\s+NOT\s+READING\s+YOUR?\s+COMMENT/i,
-  /([IL]|WE)\s+(MAKE)?\s+(BETTER)\s+(CONTENT|V[Il]DEOS?|CL[Il]PS?)/i,
+  /([IL]|WE)\s+(MAKE|CREATE)?\s+(BETTER|H[IL]GHER\sQUA[LI][LI]TY)\s+(CONTENT|V[Il]DEOS?|V[IL]DS|CL[Il]PS?)/i,  // quite agressive, might have to disable at some point 
   /(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH)\s+WARNING\s+(TROLL|N[Il][CG][CG]ER)/i,
+  /[IL]NVITE\sIN\sBIO/i,  // i dont see any normal use of that
 
   // Here are some hard coded spams that are too "normal" to make a regexp from them
   /ZACK D FILMS IS MID IM FAR BETTER/i,
@@ -69,12 +71,14 @@ const regexReason = [
   '"UTTP IS BETTER THEN..."',
   '"ALIVE BECAUSE MY VIDS ARE BETTER"',
   '"I LOVE R##ING, T#####ING ANILAMS"',
+  '"I LOVE R##ING, AB###NG ANILAMS"',
   // '"IM BETTER THEN ..."',
   '"... IS AI GEN IM BETTER"',
   '"DIDINT READ YOUR COMMENT"',
   '"IM NOT READING YOUR COMMENT"',
   '"I MAKE BETTER ..."',
   '"x WARNING TROLL"',
+  '"INVITE IN BIO"',
 
   '"... is bad im better"',
   '"im better then..."',
